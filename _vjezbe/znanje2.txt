@@ -1,0 +1,113 @@
+
+			VJEZBA 9
+Iskoristite mysqli ekstenziju kako bi se spojili na bazu “videoteka” iz proslog modula
+Ako se dogodi greska kod spajanja, ulovite tu gresku te prekinite izvodenje
+
+	/config/database.php
+<?php
+return [
+    'username'=> 'mukti',
+    'password'=> 'moksha108',
+    'database'=> 'videoteka'
+];
+	index.php
+<?php
+$config = require('./config/database.php');
+try{
+    $connection = new mysqli(username: $config['username'], password: $config['password'], 
+    database: $config['database']);
+} catch (Exception $th){
+    die('Could not connect to database');
+}
+						VJEZBA 10
+Nakon spajanja na bazu dohvatite sve zanrove iz baze videoteka
+Prodite kroz dobivene retke te ih ispisite s “echo”
+
+<?php
+
+$config = require('./config/database.php');
+
+$connection = new mysqli(username: $config['username'], password: $config['password'], 
+database: $config['database']);
+$connection->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, true);
+$result = $connection->query('SELECT * FROM zanrovi');	//mysqli_result
+
+foreach($result as $row){
+    echo $row['ime'], "\n";
+}
+    
+____________________________________________________________________________________________    
+VJEZBA 11
+Iskoristite PDO klasu za spajanje na bazu “videoteka”
+Ulovite potencijalne pogreške kod spajanja
+
+<?php
+$config = require('./config/database.php');
+try {
+    $connection = new PDO (
+        "mysql:dbname={$config['database']};host=localhost",
+        $config['username'],
+        $config['password']
+    );
+} catch (PDOException) {
+     die('Could not connect to database!');
+}
+
+_______________________________________________________________________________________
+VJEZBA 12
+Spojite se na bazu “classicmodels”
+Pokrenite transakciju te ako se dogodi greška pokrenite rollback
+Unestite novi order s proizvoljnim podacima
+Zatim nakon toga unesite proizvode te narudzbe (tablica: orderdetails)
+
+<?php
+$config = require('./config/database.php');
+
+try {
+    $connection = new PDO(
+        "mysql:dbname={$config['database']}",
+        $config['username'],
+        $config['password']
+    );
+
+
+} catch (PDOException) {
+    die('Could not connect to database!');
+}
+
+try {
+    $connection->beginTransaction();
+    $orderNumber = $connection->query('SELECT MAX(orderNumber) AS max FROM orders')->fetchColumn();
+    $orderNumber++;
+    $preparedStatement = $connection->prepare(
+        'INSERT INTO `orders` (orderNumber, `orderDate`, `requiredDate`, `status`, 
+        `customerNumber`)
+         VALUES (:orderNumber, :orderDate, :requiredDate, :status, :customerNumber)'
+    );
+
+
+    $preparedStatement->bindValue(':orderNumber', $orderNumber);
+    $preparedStatement->bindValue(':orderDate', date('Y-m-d'));
+    $preparedStatement->bindValue(':requiredDate', date('Y-m-d'));
+    $preparedStatement->bindValue(':status', 'Shipped');
+    $preparedStatement->bindValue(':customerNumber', 119);
+    $preparedStatement->execute();
+
+    $preparedStatement = $connection->prepare(
+        'INSERT INTO `orderdetails` (`orderNumber`, `productCode`, `quantityOrdered`, 
+        `priceEach`, `orderLineNumber`) VALUES (:orderNumber, :productCode, :quantity, :price, 
+        :orderLine)');
+    
+    $preparedStatement->bindValue(':orderNumber', $orderNumber);
+    $preparedStatement->bindValue(':productCode', 'S18_1749');
+    $preparedStatement->bindValue(':quantity', 20);
+    $preparedStatement->bindValue(':price', 50);
+    $preparedStatement->bindValue(':orderLine', 3);
+    $preparedStatement->execute();
+
+    $connection->commit();
+
+} catch (PDOException $e) {
+    $connection->rollback();
+    die("Failed executing queryies: {$e->getMessage()}");
+}
