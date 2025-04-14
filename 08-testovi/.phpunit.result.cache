@@ -1,0 +1,1 @@
+{"version":1,"defects":{"App\\Tests\\Videostore\\GenreTest::testGetNameReturnsInExpectedFormat":7},"times":{"App\\Tests\\Videostore\\GenreTest::testGetNameReturnsInExpectedFormat":0,"App\\Tests\\DiscordBotTest::testDisplayJoinedMessageReturnsExpectedMessage":0.001}}

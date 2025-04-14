@@ -1,0 +1,6 @@
+-Klase - plan objekta
+ i objekti
+-Instancirati objekti
+-Enkapsulacija
+-Visibility propertija 
+-Nasljeđivanje

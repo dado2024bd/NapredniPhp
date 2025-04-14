@@ -1,0 +1,10 @@
+-Abstraktne Klase
+Klasa koja se ne može instancirati i mora imati bar jednu apstraktnu metodu (delkarirana)
+
+-Sučelja
+-Imenski prostori ( Namespaces)
+
+-Automatsko učitavnje (Autoloader)
+-Try Catch blok i Exception
+
+-Design Patterns (4)

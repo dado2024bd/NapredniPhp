@@ -1,0 +1,4 @@
+-Deklarirajte klasu koja će prestavljati osobu
+-Klasi dodajte atribut koji će biti public te će sadržavati ime te osobe
+-Dodati metodu koja će vratiti ime te osobe
+-U glavnoj skripti kreirati jednu instancu te osobe te ispisati ime tako preko atributa i metode
